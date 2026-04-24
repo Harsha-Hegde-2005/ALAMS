@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title} + ' - ALAMS'">Dashboard Students</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container">
+  <div class="page-header">
+    <h1 th:text="${title}">Students</h1>
+    <p th:text="${description}">Description</p>
+  </div>
+
+  <div class="card">
+    <div class="table-wrapper" th:if="${not #lists.isEmpty(students)}">
+      <table>
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="student : ${students}">
+            <td th:text="${student.fullName}">Student</td>
+            <td th:text="${student.username}">username</td>
+            <td th:text="${student.role}">STUDENT</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(students)}" class="empty-state">
+      <div class="empty-icon">No Students</div>
+      <p>No students are registered yet.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

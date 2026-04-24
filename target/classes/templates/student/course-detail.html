@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${course.courseName} + ' - ALAMS'">Course</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <a th:href="@{/analytics/student}" class="nav-link">My Progress</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container">
+  <div th:if="${resultMessage}" class="alert alert-success" th:text="${resultMessage}"></div>
+
+  <div class="page-header">
+    <h1 th:text="${course.courseName}">Course</h1>
+    <p th:text="${course.description}">Description</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Study Materials</h2>
+      <span class="badge badge-primary" th:text="${materials.size()} + ' files'">0 files</span>
+    </div>
+    <div th:if="${materials.empty}" class="empty-state">
+      <div class="empty-icon">No Files</div>
+      <p>No study materials have been uploaded for this course yet.</p>
+    </div>
+    <div th:unless="${materials.empty}">
+      <div th:each="mat : ${materials}" class="material-item">
+        <div class="material-icon" th:text="${mat.typeIcon}">FILE</div>
+        <div class="material-info" style="flex:1">
+          <div class="name" th:text="${mat.fileName}">file.pdf</div>
+          <div class="meta">
+            <span class="badge badge-info" th:text="${mat.materialType}">PDF</span>
+            &nbsp; Uploaded: <span th:text="${mat.uploadedAt}">date</span>
+          </div>
+        </div>
+        <a th:href="@{/courses/materials/{id}/view(id=${mat.id})}" class="btn btn-secondary btn-sm" target="_blank" rel="noopener noreferrer">
+          Open Material
+        </a>
+        <a th:href="@{/quiz/take/{id}(id=${mat.id})}" class="btn btn-primary btn-sm">
+          Take Adaptive Quiz
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

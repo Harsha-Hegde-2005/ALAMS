@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${course.courseName} + ' – ALAMS'">Course – ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand">
+    <div class="brand-icon">🎓</div>ALAMS
+  </a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">🏠 Dashboard</a>
+    <a th:href="@{/courses/create}" class="nav-link">➕ New Course</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+    <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
+
+  <div class="page-header flex-between">
+    <div>
+      <h1 th:text="${course.courseName}">Course Name</h1>
+      <p th:text="${course.description}">Description</p>
+    </div>
+    <a th:href="@{/analytics/course(courseName=${course.courseName})}" class="btn btn-secondary">
+      📊 View Analytics
+    </a>
+  </div>
+
+  <div class="grid-2">
+    <!-- Upload Material -->
+    <div class="card">
+      <div class="card-header"><h2>📤 Upload Material</h2></div>
+      <form th:action="@{/courses/{id}/upload(id=${course.id})}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label class="form-label">Select File (PDF, PPT, DOCX)</label>
+          <input type="file" name="file" class="form-control" accept=".pdf,.ppt,.pptx,.doc,.docx" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">📤 Upload</button>
+      </form>
+    </div>
+
+    <!-- Add Quiz -->
+    <div class="card">
+      <div class="card-header"><h2>➕ Add Quiz Question</h2></div>
+      <div th:if="${materials.empty}">
+        <p style="color:red;">⚠ Please upload material before adding quiz.</p>
+      </div>
+
+      <div th:unless="${materials.empty}">
+        <form th:action="@{/quiz/create}" method="post">
+
+          <input type="hidden" name="courseId" th:value="${course.id}"/>
+          <input type="hidden" name="materialId" th:value="${materials[0].id}"/>
+        <div class="form-group">
+          <label class="form-label">Quiz Name</label>
+          <input type="text" name="quizName" class="form-control" placeholder="e.g. Week 1 Quiz" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Question</label>
+          <input type="text" name="question" class="form-control" placeholder="Enter your question" required/>
+        </div>
+        <div class="grid-2" style="gap:0.5rem;">
+          <div class="form-group">
+            <label class="form-label">Option A</label>
+            <input type="text" name="optionA" class="form-control" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option B</label>
+            <input type="text" name="optionB" class="form-control" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option C</label>
+            <input type="text" name="optionC" class="form-control" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option D</label>
+            <input type="text" name="optionD" class="form-control" required/>
+          </div>
+        </div>
+        <div class="grid-2" style="gap:0.5rem;">
+          <div class="form-group">
+            <label class="form-label">Correct Option</label>
+            <select name="correctOption" class="form-control" required>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Difficulty</label>
+            <select name="difficultyLevel" class="form-control" required>
+              <option value="1">1 – Easy</option>
+              <option value="2" selected>2 – Medium</option>
+              <option value="3">3 – Hard</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success">✅ Add Question</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Materials List -->
+  <div class="card mt-2">
+    <div class="card-header">
+      <h2>📁 Course Materials (<span th:text="${materials.size()}">0</span>)</h2>
+    </div>
+    <div th:if="${materials.empty}" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <p>No materials uploaded yet. Upload your first resource above.</p>
+    </div>
+    <div th:unless="${materials.empty}">
+      <div th:each="mat : ${materials}" class="material-item">
+        <div class="material-icon" th:text="${mat.typeIcon}">📄</div>
+        <div class="material-info" style="flex:1">
+          <div class="name" th:text="${mat.fileName}">file.pdf</div>
+          <div class="meta">
+            <span class="badge badge-info" th:text="${mat.materialType}">PDF</span>
+            &nbsp; Uploaded: <span th:text="${mat.uploadedAt}">date</span>
+          </div>
+        </div>
+        <a th:href="@{/analytics/course(courseName=${course.courseName})}" class="btn btn-secondary btn-sm">📊 Stats</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

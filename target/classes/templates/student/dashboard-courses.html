@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title} + ' - ALAMS'">Student Courses</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <a th:href="@{/analytics/student}" class="nav-link">My Progress</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container">
+  <div class="page-header">
+    <h1 th:text="${title}">Courses</h1>
+    <p th:text="${description}">Description</p>
+  </div>
+
+  <div class="grid-3" th:if="${not #lists.isEmpty(courses)}">
+    <a th:each="course : ${courses}" th:href="@{/courses/{id}(id=${course.id})}" class="course-card">
+      <div class="course-card-banner"></div>
+      <div class="course-card-body">
+        <div class="course-card-title" th:text="${course.courseName}">Course</div>
+        <div class="course-card-desc" th:text="${course.description}">Description</div>
+      </div>
+      <div class="course-card-footer">
+        <span>By <span th:text="${course.professor.fullName}">Professor</span></span>
+        <span class="badge badge-primary">Open</span>
+      </div>
+    </a>
+  </div>
+
+  <div th:if="${#lists.isEmpty(courses)}" class="card empty-state">
+    <div class="empty-icon">No Courses</div>
+    <p>No courses found for this section.</p>
+  </div>
+</div>
+</body>
+</html>

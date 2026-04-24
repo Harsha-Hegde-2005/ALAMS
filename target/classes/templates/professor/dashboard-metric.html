@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title} + ' - ALAMS'">Dashboard Metric</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container">
+  <div class="page-header">
+    <h1 th:text="${title}">Metric</h1>
+    <p th:text="${description}">Description</p>
+  </div>
+
+  <div class="card text-center" style="padding:2rem;">
+    <div class="stat-value" th:text="${metricValue}">0</div>
+    <div class="stat-label" th:text="${metricLabel}">Metric</div>
+  </div>
+</div>
+</body>
+</html>

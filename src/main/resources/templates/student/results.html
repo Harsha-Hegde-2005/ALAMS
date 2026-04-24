@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quiz Result - ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container" style="max-width:860px;">
+  <div class="card mt-3" style="padding:2rem;">
+    <div class="page-header">
+      <h1>Quiz Result</h1>
+      <p th:if="${quizResult}" th:text="${quizResult.quizName}">Adaptive Quiz</p>
+    </div>
+
+    <div th:if="${resultMessage}" class="alert alert-success" th:text="${resultMessage}"></div>
+
+    <div th:if="${quizResult}" class="grid-2" style="gap:1rem; margin-bottom:1.5rem;">
+      <div class="card" style="padding:1rem;">
+        <div class="meta">Score</div>
+        <div style="font-size:2rem; font-weight:700;" th:text="${quizResult.score}">0/0</div>
+      </div>
+      <div class="card" style="padding:1rem;">
+        <div class="meta">Accuracy</div>
+        <div style="font-size:2rem; font-weight:700;" th:text="${quizResult.percentage} + '%'">0%</div>
+      </div>
+    </div>
+
+    <div th:if="${quizResult}" class="alert alert-info">
+      Attempt <strong th:text="${quizResult.attemptNumber}">1</strong>
+      <span th:if="${quizResult.retakeCount > 0}">
+        &nbsp;|&nbsp; Retakes so far: <strong th:text="${quizResult.retakeCount}">0</strong>
+      </span>
+    </div>
+
+    <div th:if="${quizResult != null and quizResult.reviewItems != null}" class="card" style="padding:1rem;">
+      <div class="card-header">
+        <h2>Answer Review</h2>
+      </div>
+
+      <div th:each="item, stat : ${quizResult.reviewItems}" class="quiz-card">
+        <div class="flex-between mb-1">
+          <span class="badge badge-primary">Q<span th:text="${stat.index + 1}">1</span></span>
+          <span class="badge"
+                th:classappend="${item.correct} ? 'badge-success' : 'badge-danger'"
+                th:text="${item.correct} ? 'Correct' : 'Incorrect'">Correct</span>
+        </div>
+
+        <p style="font-weight:600;" th:text="${item.question}">Question text</p>
+        <p>
+          <strong>Difficulty:</strong>
+          <span th:text="${item.difficulty}">Medium</span>
+        </p>
+        <p>
+          <strong>Your answer:</strong>
+          <span th:text="${item.selectedOption + '. ' + item.selectedText}">A. Option</span>
+        </p>
+        <p>
+          <strong>Correct answer:</strong>
+          <span th:text="${item.correctOption + '. ' + item.correctText}">B. Option</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex-gap mt-2" style="justify-content:center;">
+      <a th:if="${quizResult}" th:href="@{/quiz/take/{id}(id=${quizResult.materialId})}" class="btn btn-primary">
+        Retake Quiz
+      </a>
+      <a th:href="@{/analytics/student}" class="btn btn-secondary">View My Progress</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

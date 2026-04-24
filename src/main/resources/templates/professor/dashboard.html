@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Professor Dashboard - ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand">
+    <div class="brand-icon">ALAMS</div>
+  </a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link active">Dashboard</a>
+    <a th:href="@{/courses/create}" class="nav-link">New Course</a>
+    <span class="nav-badge">Prof. <span th:text="${user.fullName}"></span></span>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+  <div class="page-header">
+    <h1>Welcome back, <span th:text="${user.fullName}">Professor</span></h1>
+    <p>Click any dashboard card to open its content.</p>
+  </div>
+
+  <div class="stats-grid">
+    <a th:href="@{/dashboard/professor/courses}" class="stat-card">
+      <div class="stat-icon blue">C</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${totalCourses}">0</div>
+        <div class="stat-label">Total Courses</div>
+      </div>
+    </a>
+    <a th:href="@{/dashboard/professor/students}" class="stat-card">
+      <div class="stat-icon green">S</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${totalStudents}">0</div>
+        <div class="stat-label">Registered Students</div>
+      </div>
+    </a>
+    <a th:href="@{/dashboard/professor/my-courses}" class="stat-card">
+      <div class="stat-icon purple">M</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${myCourses.size()}">0</div>
+        <div class="stat-label">My Courses</div>
+      </div>
+    </a>
+    <a th:href="@{/dashboard/professor/submissions}" class="stat-card">
+      <div class="stat-icon orange">Q</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${totalSubmissions}">0</div>
+        <div class="stat-label">Quiz Submissions</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>My Courses</h2>
+      <a th:href="@{/courses/create}" class="btn btn-primary btn-sm">Create Course</a>
+    </div>
+
+    <div th:if="${myCourses.empty}" class="empty-state">
+      <div class="empty-icon">No Courses</div>
+      <p>No courses yet. Create your first course to get started.</p>
+    </div>
+
+    <div class="grid-3" th:unless="${myCourses.empty}">
+      <a th:each="course : ${myCourses}" th:href="@{/courses/{id}(id=${course.id})}" class="course-card">
+        <div class="course-card-banner"></div>
+        <div class="course-card-body">
+          <div class="course-card-title" th:text="${course.courseName}">Course Name</div>
+          <div class="course-card-desc" th:text="${course.description}">Description</div>
+        </div>
+        <div class="course-card-footer">
+          <span><span th:text="${course.materials.size()}">0</span> materials</span>
+          <span class="badge badge-primary">View</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>My Progress - ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container">
+  <div class="page-header">
+    <h1>My Adaptive Performance Report</h1>
+    <p>Strategy: <strong th:text="${strategyName}">Student Performance</strong>
+       &nbsp;|&nbsp; Student: <strong th:text="${username}"></strong></p>
+  </div>
+
+  <div class="card">
+    <div th:if="${report.empty}" class="empty-state">
+      <div class="empty-icon">No Data</div>
+      <p>No quiz results yet. Take a quiz to generate your adaptive report.</p>
+      <a th:href="@{/dashboard}" class="btn btn-primary mt-2">Browse Courses</a>
+    </div>
+    <div class="table-wrapper" th:unless="${report.empty}">
+      <table>
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Material</th>
+            <th>Score</th>
+            <th>Effectiveness</th>
+            <th>Adaptiveness</th>
+            <th>Retakes</th>
+            <th>Avg Difficulty</th>
+            <th>Suggestion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="row : ${report}">
+            <td th:text="${row.course}">Course</td>
+            <td th:text="${row.material}">Material</td>
+            <td>
+              <div><strong th:text="${row.correct + '/' + row.total}">0/0</strong></div>
+              <span class="badge"
+                    th:classappend="'badge-' + ${row.badge}"
+                    th:text="${row.percentage}">0%</span>
+            </td>
+            <td th:text="${row.effectiveness}">Effective</td>
+            <td th:text="${row.adaptiveness}">Well Aligned</td>
+            <td th:text="${row.retakeCount}">0</td>
+            <td th:text="${row.averageDifficulty}">2.0</td>
+            <td th:text="${row.suggestion}">Suggestion</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

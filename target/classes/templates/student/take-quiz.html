@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Adaptive Quiz - ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand"><div class="brand-icon">ALAMS</div></a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link">Back to Dashboard</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="container" style="max-width:820px;">
+  <div class="page-header">
+    <h1>Adaptive Quiz</h1>
+    <p>First attempt includes all available difficulty levels. Later attempts adapt based on your latest result.</p>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div th:if="${quizzes == null or #lists.isEmpty(quizzes)}" class="card">
+    <div class="empty-state">
+      <div class="empty-icon">No Quiz</div>
+      <p>No quiz questions are available for this material right now.</p>
+      <a th:href="@{/dashboard}" class="btn btn-primary mt-2">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div th:if="${quizzes != null and not #lists.isEmpty(quizzes)}">
+    <div class="alert alert-info">
+      <strong th:text="${quizzes.size()}">0</strong> question(s) are included in this attempt.
+      <span th:if="${hasPreviousAttempt}">This retake uses your latest adaptive level and prefers unseen questions first.</span>
+    </div>
+
+    <form th:action="@{/quiz/submit}" method="post">
+      <input type="hidden" name="materialId" th:value="${materialId}"/>
+
+      <div th:each="quiz, stat : ${quizzes}" class="quiz-card">
+        <div class="flex-between mb-1">
+          <div>
+            <span class="badge badge-primary">Q<span th:text="${stat.index + 1}">1</span></span>
+            <span class="badge badge-info" th:text="${quiz.quizName}">Quiz Name</span>
+          </div>
+          <span class="badge"
+                th:classappend="${quiz.difficultyLevel == 1 ? 'diff-easy' : quiz.difficultyLevel == 2 ? 'diff-medium' : 'diff-hard'}"
+                th:text="${quiz.difficultyLabel}">Medium</span>
+        </div>
+
+        <p style="font-weight:600;font-size:1rem;" th:text="${quiz.question}">Question text</p>
+
+        <div class="quiz-options">
+          <label class="quiz-option">
+            <input type="radio" th:name="${'answers[' + quiz.id + ']'}" value="A" required/>
+            <span><strong>A.</strong> <span th:text="${quiz.optionA}">Option A</span></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" th:name="${'answers[' + quiz.id + ']'}" value="B"/>
+            <span><strong>B.</strong> <span th:text="${quiz.optionB}">Option B</span></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" th:name="${'answers[' + quiz.id + ']'}" value="C"/>
+            <span><strong>C.</strong> <span th:text="${quiz.optionC}">Option C</span></span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" th:name="${'answers[' + quiz.id + ']'}" value="D"/>
+            <span><strong>D.</strong> <span th:text="${quiz.optionD}">Option D</span></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex-gap mt-2">
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+        <a th:href="@{/dashboard}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

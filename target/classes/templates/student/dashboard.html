@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard - ALAMS</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+  <a th:href="@{/dashboard}" class="navbar-brand">
+    <div class="brand-icon">ALAMS</div>
+  </a>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}" class="nav-link active">Dashboard</a>
+    <a th:href="@{/analytics/student}" class="nav-link">My Progress</a>
+    <span class="nav-badge"><span th:text="${user.fullName}"></span></span>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+  <div class="page-header">
+    <h1>Hello, <span th:text="${user.fullName}">Student</span></h1>
+    <p>Click any dashboard card to open the matching content.</p>
+  </div>
+
+  <div class="stats-grid">
+    <a th:href="@{/dashboard/student/courses}" class="stat-card">
+      <div class="stat-icon blue">C</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${totalCourses}">0</div>
+        <div class="stat-label">Available Courses</div>
+      </div>
+    </a>
+    <a th:href="@{/dashboard/student/submissions}" class="stat-card">
+      <div class="stat-icon green">Q</div>
+      <div class="stat-info">
+        <div class="stat-value" th:text="${studentSubmissions}">0</div>
+        <div class="stat-label">Total Submissions</div>
+      </div>
+    </a>
+    <a th:href="@{/analytics/student}" class="stat-card">
+      <div class="stat-icon purple">A</div>
+      <div class="stat-info">
+        <div class="stat-value">View</div>
+        <div class="stat-label">Adaptive Level</div>
+      </div>
+    </a>
+    <a th:href="@{/analytics/student}" class="stat-card">
+      <div class="stat-icon orange">R</div>
+      <div class="stat-info">
+        <div class="stat-value">Open</div>
+        <div class="stat-label">View My Report</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Available Courses</h2>
+    </div>
+    <div th:if="${allCourses.empty}" class="empty-state">
+      <div class="empty-icon">No Courses</div>
+      <p>No courses available yet. Check back soon.</p>
+    </div>
+    <div class="grid-3" th:unless="${allCourses.empty}">
+      <a th:each="course : ${allCourses}"
+         th:href="@{/courses/{id}(id=${course.id})}"
+         class="course-card">
+        <div class="course-card-banner"></div>
+        <div class="course-card-body">
+          <div class="course-card-title" th:text="${course.courseName}">Course</div>
+          <div class="course-card-desc" th:text="${course.description}">Desc</div>
+        </div>
+        <div class="course-card-footer">
+          <span>By <span th:text="${course.professor.fullName}">Professor</span></span>
+          <span class="badge badge-primary">Explore</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
